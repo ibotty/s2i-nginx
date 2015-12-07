@@ -35,3 +35,4 @@ fi
 
 echo "---> testing config"
 /opt/rh/rh-nginx18/root/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t
+rm -f /opt/app-root/run/nginx.pid
