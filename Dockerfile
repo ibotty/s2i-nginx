@@ -14,8 +14,8 @@ RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
  && yum install --setopt=tsflags=nodocs -y rh-nginx${NGINX_VERSION/\./} \
  && yum clean all -y \
  && chmod a+rx /var/opt/rh/rh-nginx18/lib/nginx \
- && chown -R default /var/opt/rh/rh-nginx18/lib/nginx/tmp \
-                     /var/opt/rh/rh-nginx18/run \
+ && chmod -R a+rwX  /var/opt/rh/rh-nginx18/lib/nginx/tmp \
+                    /var/opt/rh/rh-nginx18/run \
  && mkdir -p /opt/app-root/etc/nginx.conf.d
 
 ADD nginx.conf nginx.server.sample.conf /opt/app-root/etc/
