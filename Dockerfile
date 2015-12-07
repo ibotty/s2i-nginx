@@ -22,8 +22,7 @@ ADD nginx.conf nginx.server.sample.conf /opt/app-root/etc/
 
 COPY ./.s2i/bin/ ${STI_SCRIPTS_PATH}
 
-#RUN chown -R 1001:1001 /opt/app-root
-RUN chmod a+rwX /opt/app-root
+RUN chown -R 1001:1001 /opt/app-root
 
 USER 1001
 
