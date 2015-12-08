@@ -16,6 +16,7 @@ RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
  && mkdir -p /opt/app-root/etc/nginx.conf.d /opt/app-root/run \
  && chmod -R a+rx /var/opt/rh/rh-nginx18/lib/nginx \
  && chmod -R a+rwX  /var/opt/rh/rh-nginx18/lib/nginx/tmp \
+                    /var/opt/rh/rh-nginx18/log \
                     /var/opt/rh/rh-nginx18/run \
                     /opt/app-root/run
 
