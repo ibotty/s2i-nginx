@@ -20,7 +20,7 @@ RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
                     /var/opt/rh/rh-nginx18/run \
                     /opt/app-root/run
 
-ADD nginx.conf nginx.server.sample.conf /opt/app-root/etc/
+COPY ./etc/ /opt/app-root/etc
 
 COPY ./.s2i/bin/ ${STI_SCRIPTS_PATH}
 
