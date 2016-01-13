@@ -6,5 +6,6 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
+NGINX_CONF=${NGINX_CONF-/opt/app-root/etc/nginx.conf}
 
-exec /opt/rh/rh-nginx18/root/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf
+exec ${NGINX_BASE_DIR}/root/usr/sbin/nginx -c "$NGINX_CONF"

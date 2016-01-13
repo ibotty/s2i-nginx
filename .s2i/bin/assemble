@@ -19,6 +19,8 @@ NGINX_CONF_FILE=${NGINX_CONF_FILE-}
 NGINX_CONF_DIR=${NGINX_CONF_DIR-conf.d}
 
 echo "---> Installing application source"
+rm /opt/app-root/etc/nginx.conf.d/default.conf
+
 if [ -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
     cp -Rf /tmp/src/"${NGINX_STATIC_DIR}"/. ./html
 else
