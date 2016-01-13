@@ -3,7 +3,7 @@ FROM openshift/base-centos7
 MAINTAINER Tobias Florek <tob@butter.sh>
 
 ENV NGINX_VERSION 1.8
-ENV NGINX_BASE_DIR /var/opt/rh/rh-nginx${NGINX_VERSION/./}/
+ENV NGINX_BASE_DIR /var/opt/rh/rh-nginx18
 
 LABEL io.k8s.description="Platform for serving nginx-based applications (static files)" \
       io.k8s.display-name="nginx builder ${NGINX_VERSION}" \
