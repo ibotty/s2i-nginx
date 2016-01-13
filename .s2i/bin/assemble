@@ -17,6 +17,7 @@ fi
 NGINX_STATIC_DIR=${NGINX_STATIC_DIR-html}
 NGINX_CONF_FILE=${NGINX_CONF_FILE-}
 NGINX_CONF_DIR=${NGINX_CONF_DIR-conf.d}
+
 echo "---> Installing application source"
 rm /opt/app-root/etc/nginx.conf.d/default.conf
 
