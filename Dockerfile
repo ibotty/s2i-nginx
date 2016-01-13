@@ -14,11 +14,11 @@ RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
  && yum install --setopt=tsflags=nodocs -y rh-nginx${NGINX_VERSION/\./} \
  && yum clean all -y \
  && mkdir -p /opt/app-root/etc/nginx.conf.d /opt/app-root/run \
- && chmod -R a+rx /var/opt/rh/rh-nginx18/lib/nginx \
- && chmod -R a+rwX  /var/opt/rh/rh-nginx18/lib/nginx/tmp \
-                    /var/opt/rh/rh-nginx18/log \
-                    /var/opt/rh/rh-nginx18/run \
-                    /opt/app-root/run
+ && chmod -R a+rx  /var/opt/rh/rh-nginx${NGINX_VERSION/./}/lib/nginx \
+ && chmod -R a+rwX /var/opt/rh/rh-nginx${NGINX_VERSION/./}/lib/nginx/tmp \
+                   /var/opt/rh/rh-nginx${NGINX_VERSION/./}/log \
+                   /var/opt/rh/rh-nginx${NGINX_VERSION/./}/run \
+                   /opt/app-root/run
 
 COPY ./etc/ /opt/app-root/etc
 COPY ./.s2i/bin/ ${STI_SCRIPTS_PATH}
