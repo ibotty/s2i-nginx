@@ -36,7 +36,7 @@ else
 fi
 
 echo "---> testing config"
-$NGINX_BASE_DIR/root/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t
+$NGINX_BASE_DIR/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t
 
 echo "---> cleanup"
 rm -f /opt/app-root/run/nginx.pid $NGINX_VAR_DIR/log/nginx/error.log
