@@ -18,25 +18,39 @@ NGINX_STATIC_DIR=${NGINX_STATIC_DIR-html}
 NGINX_CONF_FILE=${NGINX_CONF_FILE-}
 NGINX_CONF_DIR=${NGINX_CONF_DIR-conf.d}
 
-echo "---> Installing application source"
-rm /opt/app-root/etc/nginx.conf.d/default.conf
+copy_static_files() {
+    echo "---> Copying static files"
+    if [ -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
+        cp -Rf /tmp/src/"${NGINX_STATIC_DIR}"/. ./html
+    else
+        cp -Rf /tmp/src/. ./html
+    fi
+}
 
-if [ -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
-    cp -Rf /tmp/src/"${NGINX_STATIC_DIR}"/. ./html
-else
-    cp -Rf /tmp/src/. ./html
-fi
+copy_server_configs() {
+    echo "---> Copying nginx config"
+    rm /opt/app-root/etc/nginx.conf.d/default.conf
 
-if [ -n "${NGINX_SERVER_CONF_FILE}" -a -f /tmp/src/"${NGINX_SERVER_CONF_FILE}" ]; then
-    cp /tmp/src/"${NGINX_SERVER_CONF_FILE}" /opt/app-root/etc/nginx.conf.d
-elif [ -n "${NGINX_CONF_DIR}" -a -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
-    cp -Rf /tmp/src/"${NGINX_CONF_DIR}"/* /opt/app-root/etc/nginx.conf.d
-else
-    cp /opt/app-root/etc/nginx.server.sample.conf /opt/app-root/etc/nginx.conf.d/default.conf
-fi
+    if [ -n "${NGINX_SERVER_CONF_FILE}" -a -f /tmp/src/"${NGINX_SERVER_CONF_FILE}" ]; then
+        cp /tmp/src/"${NGINX_SERVER_CONF_FILE}" /opt/app-root/etc/nginx.conf.d
+    elif [ -n "${NGINX_CONF_DIR}" -a -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
+        cp -Rf /tmp/src/"${NGINX_CONF_DIR}"/* /opt/app-root/etc/nginx.conf.d
+    else
+        cp /opt/app-root/etc/nginx.server.sample.conf /opt/app-root/etc/nginx.conf.d/default.conf
+    fi
+}
 
-echo "---> testing config"
-$NGINX_BASE_DIR/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t
+test_config() {
+    echo "---> testing config"
+    $NGINX_BASE_DIR/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t
+}
 
-echo "---> cleanup"
-rm -f /opt/app-root/run/nginx.pid $NGINX_VAR_DIR/log/nginx/error.log
+cleanup() {
+    echo "---> cleanup"
+    rm -f /opt/app-root/run/nginx.pid $NGINX_VAR_DIR/log/nginx/error.log
+}
+
+copy_static_files
+copy_server_configs
+test_config
+cleanup
