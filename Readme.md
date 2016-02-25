@@ -18,3 +18,13 @@ If there is a directory `conf.d` containing (possibly multiple) nginx `server`
 snippets, these will be used.  It will _not_ copy the default  config, so be
 sure to include the right files. See `etc/nginx.server.sample.conf` for the
 default config.
+
+## Environment variables
+
+There are some environment variables you can set to influence build behavior.
+
+`NGINX_STATIC_DIR` will set the repo subdir to use for static files, default
+`html`.
+
+Either `NGINX_CONF_FILE` will set a config snippet to use or `NGINX_CONF_DIR`
+will copy config from the set dir (defaults to `conf.d`).
