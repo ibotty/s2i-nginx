@@ -17,7 +17,7 @@ In that case you will not be able to customize the nginx config.
 You can supply a nginx.conf-snippet that will be used by the built container.
 
 If there is a directory `conf.d` containing (possibly multiple) nginx `server`
-snippets, these will be used.  It will _not_ copy the default  config, so be
+snippets these will be used.  It will _not_ copy the default  config, so be
 sure to include the right files. See `etc/nginx.server.sample.conf` for the
 default config.
 
@@ -32,7 +32,7 @@ These will be copied to `/opt/app-root/etc/aux`.
 
 ## Environment variables
 
-There are some environment variables you can set to influence build behavior.
+There are some environment variables you can set to influence **build** behavior.
 
 `NGINX_STATIC_DIR` sets the repo subdir to use for static files, default
 `html`.
