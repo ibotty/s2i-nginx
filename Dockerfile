@@ -13,7 +13,7 @@ LABEL io.k8s.description="Platform for serving nginx-based applications (static 
 
 
 RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
- && yum install --setopt=tsflags=nodocs -y rh-nginx${NGINX_VERSION/\./} \
+ && yum install --setopt=tsflags=nodocs -y bcrypt rh-nginx${NGINX_VERSION/\./} \
  && yum clean all -y \
  && mkdir -p /opt/app-root/etc/nginx.conf.d /opt/app-root/run \
  && chmod -R a+rx  $NGINX_VAR_DIR/lib/nginx \
