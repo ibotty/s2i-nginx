@@ -55,7 +55,15 @@ copy_aux_dir() {
 
 test_config() {
     echo "---> testing config"
-    $NGINX_BASE_DIR/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t
+    if ! $NGINX_BASE_DIR/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t ; then
+        echo "nginx configuration not valid."
+        echo
+        for f in /opt/app-root/etc/nginx.conf.d/*; do
+            echo "==> $f <=="
+            cat $f
+        done
+        exit 1
+    fi
 }
 
 cleanup() {
