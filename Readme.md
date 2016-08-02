@@ -32,6 +32,12 @@ These will be copied to `/opt/app-root/etc/aux`.
 
 ## Environment variables
 
+### Runtime behavior
+
+Environment variables in files in `conf.d` ending with `.tmpl` are substituted via `envsubst`.
+
+
+### Build behavior
 There are some environment variables you can set to influence **build** behavior.
 
 `NGINX_STATIC_DIR` sets the repo subdir to use for static files, default
