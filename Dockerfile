@@ -22,8 +22,7 @@ RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
                    $NGINX_VAR_DIR/run \
                    /opt/app-root/run
 
-LABEL io.openshift.s2i.scripts-url=image:///usr/local/s2i
-COPY ./.s2i/bin/ /usr/local/s2i
+COPY ./.s2i/bin/ /usr/libexec/s2i
 
 COPY ./etc/ /opt/app-root/etc
 
