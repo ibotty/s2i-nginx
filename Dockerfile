@@ -22,10 +22,8 @@ RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
                    $NGINX_VAR_DIR/run \
                    /opt/app-root/run
 
-COPY ./.s2i/bin/ /usr/libexec/s2i
-COPY ./.s2i/bin/ /usr/local/bin
-
 COPY ./etc/ /opt/app-root/etc
+COPY ./.s2i/bin/ ${STI_SCRIPTS_PATH}
 
 RUN cp /opt/app-root/etc/nginx.server.sample.conf /opt/app-root/etc/nginx.conf.d/default.conf \
  && chown -R 1001:1001 /opt/app-root
