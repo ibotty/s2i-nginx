@@ -43,10 +43,12 @@ copy_default_config() {
 copy_server_configs() {
     echo "---> Copying nginx config"
     rm /opt/app-root/etc/nginx.conf.d/default.conf
+    if [ -n "${NGINX_CONF_FILE}" -a -f /tmp/src/"${NGINX_CONF_FILE}" ]; then
+        echo "---> Copying nginx config file ${NGINX_CONF_FILE}"
+        cp /tmp/src/"${NGINX_CONF_FILE}" /opt/app-root/etc/nginx.conf
+    fi
     if [ ! -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
         copy_default_config
-    elif [ -n "${NGINX_SERVER_CONF_FILE}" -a -f /tmp/src/"${NGINX_SERVER_CONF_FILE}" ]; then
-        cp /tmp/src/"${NGINX_SERVER_CONF_FILE}" /opt/app-root/etc/nginx.conf.d
     elif [ -n "${NGINX_CONF_DIR}" -a -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
         cp -Rf /tmp/src/"${NGINX_CONF_DIR}"/. /opt/app-root/etc/nginx.conf.d
     else
