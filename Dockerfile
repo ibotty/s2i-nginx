@@ -23,6 +23,7 @@ RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
                    /opt/app-root/run
 
 COPY ./.s2i/bin/ /usr/libexec/s2i
+COPY ./.s2i/bin/ /usr/local/bin
 
 COPY ./etc/ /opt/app-root/etc
 
