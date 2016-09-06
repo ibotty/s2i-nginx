@@ -18,6 +18,20 @@ NGINX_CONF_FILE=${NGINX_CONF_FILE-}
 NGINX_CONF_DIR=${NGINX_CONF_DIR-conf.d}
 NGINX_AUX_DIR=${NGINX_AUX_DIR-aux}
 
+envsubst_config() {
+  if ls /opt/app-root/etc/nginx.conf.d/*.tmpl > /dev/null 2>&1 ; then
+    echo "---> substituting environment variables in templates"
+    for file in /opt/app-root/etc/nginx.conf.d/*.tmpl; do
+      target_file="/opt/app-root/etc/nginx.conf.d/$(basename "$file" .tmpl)"
+      if [ -f "$target_file" ]; then
+        echo "Not substituting file $file because $target_file already exists!"
+      else
+        envsubst < "$file" > "$target_file"
+      fi
+    done
+  fi
+}
+
 # Restore artifacts from the previous build (if they exist).
 #
 restore_build_artifacts() {
@@ -37,6 +51,7 @@ copy_static_files() {
 }
 
 copy_default_config() {
+    echo -e "---> Copying default config"
     cp /opt/app-root/etc/nginx.server.sample.conf /opt/app-root/etc/nginx.conf.d/default.conf
 }
 
@@ -44,7 +59,7 @@ copy_server_configs() {
     echo "---> Copying nginx config"
     rm /opt/app-root/etc/nginx.conf.d/default.conf
     if [ -n "${NGINX_CONF_FILE}" -a -f /tmp/src/"${NGINX_CONF_FILE}" ]; then
-        echo "---> Copying nginx config file ${NGINX_CONF_FILE}"
+        echo -e "---> Copying nginx config file ${NGINX_CONF_FILE}"
         cp /tmp/src/"${NGINX_CONF_FILE}" /opt/app-root/etc/nginx.conf
     fi
     if [ ! -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
@@ -65,6 +80,8 @@ copy_aux_dir() {
 }
 
 test_config() {
+    envsubst_config
+
     echo "---> testing config"
     if ! $NGINX_BASE_DIR/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t ; then
         echo "nginx configuration not valid."
