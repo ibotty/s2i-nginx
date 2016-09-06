@@ -19,6 +19,7 @@ NGINX_CONF_DIR=${NGINX_CONF_DIR-conf.d}
 NGINX_AUX_DIR=${NGINX_AUX_DIR-aux}
 
 envsubst_config() {
+  export DOLAR='$'
   if ls /opt/app-root/etc/nginx.conf.d/*.tmpl > /dev/null 2>&1 ; then
     echo "---> substituting environment variables in templates"
     for file in /opt/app-root/etc/nginx.conf.d/*.tmpl; do
@@ -65,9 +66,14 @@ copy_server_configs() {
     if [ ! -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
         copy_default_config
     elif [ -n "${NGINX_CONF_DIR}" -a -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
+        echo -e "---> Copying files from config dir ${NGINX_CONF_DIR}"
         cp -Rf /tmp/src/"${NGINX_CONF_DIR}"/. /opt/app-root/etc/nginx.conf.d
     else
         copy_default_config
+    fi
+    if [ -n "${NGINX_CONF_DIR}" -a -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
+        echo -e "---> Copying files from config dir ${NGINX_CONF_DIR}"
+        cp -Rf /tmp/src/"${NGINX_CONF_DIR}"/. /opt/app-root/etc/nginx.conf.d
     fi
 }
 
