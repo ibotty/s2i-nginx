@@ -1,0 +1,11 @@
+sudo: required
+
+services:
+  - docker
+
+install:
+  - curl -vL https://github.com/openshift/source-to-image/releases/download/v1.1.7/source-to-image-v1.1.7-226afa1-linux-amd64.tar.gz | tar -xzv
+  - sudo mv s2i /usr/local/bin/s2i
+
+script:
+  - make test
