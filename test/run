@@ -1,15 +1,19 @@
-
 #!/bin/bash
 #
 # The 'run' performs a simple test that verifies the S2I image.
 # The main focus here is to exercise the S2I scripts.
 #
 # For more information see the documentation:
-#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+# https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 # IMAGE_NAME specifies a name of the candidate image used for testing.
 # The image has to be available before this script is executed.
 #
+if [ $# -eq 0 ]; then
+  echo "ERROR: No test project name has been passed."
+  exit 1
+fi
+
 IMAGE_NAME=${IMAGE_NAME-s2i-nginx-candidate}
 
 # Determining system utility executables (darwin compatibility check)
@@ -20,17 +24,18 @@ if (echo "$OSTYPE" | egrep -qs 'darwin'); then
   ! type -a "gmktemp" &>"/dev/null" || MKTEMP_EXEC="gmktemp"
 fi
 
-test_dir="$($READLINK_EXEC -zf $(dirname "${BASH_SOURCE[0]}"))"
+test_project=${1}
+test_dir="$($READLINK_EXEC -zf $(dirname "${0}"))"
 image_dir=$($READLINK_EXEC -zf ${test_dir}/..)
 scripts_url="file://${image_dir}/.s2i/bin"
 cid_file=$($MKTEMP_EXEC -u --suffix=.cid)
 
 # Since we built the candidate image locally, we don't want S2I to attempt to pull
 # it from Docker hub
-s2i_args="--force-pull=false -s ${scripts_url} --loglevel=2"
+s2i_args="--pull-policy=never --loglevel=2"
 
 # Port the image exposes service to be tested
-test_port=8080
+test_port="$(docker inspect --format='{{range $key, $value := .ContainerConfig.ExposedPorts }}{{$key}}{{end}}' ${IMAGE_NAME} | sed 's/\/.*//')"
 
 image_exists() {
   docker inspect $1 &>/dev/null
@@ -41,11 +46,23 @@ container_exists() {
 }
 
 container_ip() {
-  docker inspect --format="{{ .NetworkSettings.IPAddress }}" $(cat $cid_file)
+  if (echo "$OSTYPE" | egrep -qs 'darwin'); then
+    docker-machine ip
+  else
+    docker inspect --format="{{ .NetworkSettings.IPAddress }}" $(cat $cid_file)
+  fi
+}
+
+container_port() {
+  if (echo "$OSTYPE" | egrep -qs 'darwin'); then
+    docker inspect --format="{{(index .NetworkSettings.Ports \"$test_port/tcp\" 0).HostPort}}" $(cat $cid_file)
+  else
+    echo $test_port
+  fi
 }
 
 run_s2i_build() {
-  s2i build --incremental=true ${s2i_args} file://${test_dir}/test-app ${IMAGE_NAME} ${IMAGE_NAME}-testapp
+  s2i build --incremental=true ${s2i_args} file://${test_dir}/${test_project} ${IMAGE_NAME} ${IMAGE_NAME}-testapp
 }
 
 prepare() {
@@ -54,7 +71,7 @@ prepare() {
     exit 1
   fi
   # s2i build requires the application is a valid 'GIT' repository
-  pushd ${test_dir}/test-app >/dev/null
+  pushd ${test_dir}/${test_project} >/dev/null
   git init
   git config user.email "build@localhost" && git config user.name "builder"
   git add -A && git commit -m "Sample commit"
@@ -75,6 +92,7 @@ cleanup() {
   if image_exists ${IMAGE_NAME}-testapp; then
     docker rmi ${IMAGE_NAME}-testapp
   fi
+  rm -rf ${test_dir}/${test_project}/.git
 }
 
 check_result() {
@@ -111,13 +129,13 @@ test_connection() {
   local attempt=1
   local result=1
   while [ $attempt -le $max_attempts ]; do
-    echo "Sending GET request to http://$(container_ip):${test_port}/"
+    echo "Sending GET request($attempt) to http://$(container_ip):$(container_port)/"
     if (echo "$OSTYPE" | egrep -qs 'darwin'); then
       echo "Warning for OSX users: if you can't access the container's IP ${container_ip} directly (because you use boot2docker for example)"
       echo "you should run the curl command in a container, for example using:"
-      echo "docker run --rm -it sequenceiq/alpine-curl curl -s -w %{http_code} -o /dev/null http://$(container_ip):${test_port}/"
+      echo "docker run --rm -it sequenceiq/alpine-curl curl -s -w %{http_code} -o /dev/null http://$(container_ip):$(container_port)/"
     fi
-    response_code=$(curl -s -w %{http_code} -o /dev/null http://$(container_ip):${test_port}/)
+    response_code=$(curl -s -w %{http_code} -o /dev/null http://$(container_ip):$(container_port)/)
     status=$?
     if [ $status -eq 0 ]; then
       if [ $response_code -eq 200 ]; then
