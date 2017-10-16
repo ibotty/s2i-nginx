@@ -1,0 +1,13 @@
+server {
+    listen      8080;
+    server_name _;
+    # listen 80 default_server;
+
+    location / {
+        root   /opt/app-root/src/html;
+        index  index.html index.htm;
+
+        add_header X-Gateway-Cache ${DOLAR}upstream_cache_status;
+        add_header X-Gateway-Server ${DOLAR}hostname;
+    }
+}
