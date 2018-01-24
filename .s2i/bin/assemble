@@ -55,7 +55,7 @@ copy_aux_dir() {
 
 test_config() {
     echo "---> testing config"
-    if ! $NGINX_BASE_DIR/usr/sbin/nginx -c /opt/app-root/etc/nginx.conf -t ; then
+    if ! openresty -c /opt/app-root/etc/nginx.conf -t ; then
         echo "nginx configuration not valid."
         echo
         for f in /opt/app-root/etc/nginx.conf.d/*; do
@@ -72,9 +72,15 @@ cleanup() {
     chmod a+rwx /opt/app-root/etc/nginx.conf.d
 }
 
+install_dependencies() {
+    echo "---> installing openresty lua dependencies in opm-dependencies.txt"
+    grep -v "^#" /tmp/src/opm-dependencies.txt | xargs -n1 opm get
+}
+
 copy_static_files
 copy_server_configs
 copy_aux_dir
+install_dependencies
 
 test_config
 cleanup

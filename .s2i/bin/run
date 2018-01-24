@@ -25,4 +25,4 @@ envsubst_config() {
 
 envsubst_config
 
-exec ${NGINX_BASE_DIR}/usr/sbin/nginx -c "$NGINX_CONF"
+exec openresty -c "$NGINX_CONF"

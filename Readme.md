@@ -1,4 +1,4 @@
-# Source-to-image builder for static nginx containers
+# Source-to-image builder for openresty's nginx
 
 ## Basic use case
 
@@ -10,6 +10,16 @@ a basic nginx config that will simply serve these files.
 
 If there is no `html` directory, it will just copy all files in the repo.
 In that case you will not be able to customize the nginx config.
+
+## Lua sources
+
+Lua sources have to be put in ./src.
+
+
+## OPM packages
+
+Additional packages can be installed when put into opm-dependencies.openresty.
+This file is read and processed linewise, so version bounds will only be honored, if no previous package already installed the same package as dependency.
 
 
 ## Configuring nginx

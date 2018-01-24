@@ -2,24 +2,21 @@ FROM centos/s2i-base-centos7
 
 MAINTAINER Tobias Florek <tob@butter.sh>
 
-ENV NGINX_VERSION 1.8
-ENV NGINX_BASE_DIR /opt/rh/rh-nginx18/root
-ENV NGINX_VAR_DIR /var/opt/rh/rh-nginx18
+ENV NGINX_VAR_DIR /usr/local/openresty
 
 LABEL io.k8s.description="Platform for serving nginx-based applications (static files)" \
-      io.k8s.display-name="nginx builder ${NGINX_VERSION}" \
+      io.k8s.display-name="nginx openresty builder" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,nginx,webserver"
 
 
-RUN yum install --setopt=tsflags=nodocs -y centos-release-scl-rh \
- && yum install --setopt=tsflags=nodocs -y bcrypt rh-nginx${NGINX_VERSION/\./} \
+RUN yum-config-manager --add-repo https://openresty.org/package/centos/openresty.repo \
+ && yum install -y --setopt=tsflags=nodocs openresty openresty-opm openresty-resty openresty-pcre bcrypt \
  && yum clean all -y \
  && mkdir -p /opt/app-root/etc/nginx.conf.d /opt/app-root/run \
- && chmod -R a+rx  $NGINX_VAR_DIR/lib/nginx \
- && chmod -R a+rwX $NGINX_VAR_DIR/lib/nginx/tmp \
-                   $NGINX_VAR_DIR/log \
-                   $NGINX_VAR_DIR/run \
+ && chmod -R a+rx  $NGINX_VAR_DIR/nginx \
+ && chmod -R a+rwX $NGINX_VAR_DIR/logs \
+                   $NGINX_VAR_DIR/site/lualib \
                    /opt/app-root/run
 
 COPY ./etc/ /opt/app-root/etc
