@@ -43,6 +43,12 @@ copy_server_configs() {
     fi
 }
 
+copy_source() {
+    echo "---> Copying files"
+    cp -Rf /tmp/src/. /opt/app-root/src
+    rm -fr "/opt/app-root/src/${NGINX_CONF_DIR}"
+}
+
 copy_aux_dir() {
     if [ -d /tmp/src/"${NGINX_AUX_DIR}" ]; then
         echo "---> Copying auxiliary files"
@@ -53,7 +59,7 @@ copy_aux_dir() {
 
 test_config() {
     echo "---> testing config"
-    if ! openresty -c /opt/app-root/etc/nginx.conf -t ; then
+    if ! openresty -p "$(mktemp)" -c /opt/app-root/etc/nginx.conf -t ; then
         echo "nginx configuration not valid."
         echo
         for f in /opt/app-root/etc/nginx.conf.d/*; do
@@ -66,8 +72,7 @@ test_config() {
 
 cleanup() {
     echo "---> cleanup"
-    rm -f /opt/app-root/run/nginx.pid "$NGINX_VAR_DIR/nginx/logs/error.log"
-    chmod a+rwx /opt/app-root/etc/nginx.conf.d
+    chmod -R a+rwx /opt/app-root
 }
 
 install_dependencies() {
@@ -80,6 +85,7 @@ install_dependencies() {
 copy_static_files
 copy_server_configs
 copy_aux_dir
+copy_source
 install_dependencies
 
 test_config

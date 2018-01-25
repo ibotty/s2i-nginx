@@ -25,4 +25,4 @@ envsubst_config() {
 
 envsubst_config
 
-exec openresty -c "$NGINX_CONF"
+exec openresty -p /opt/app-root/src -c "$NGINX_CONF"
