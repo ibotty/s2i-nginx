@@ -16,7 +16,7 @@ RUN yum-config-manager --add-repo https://openresty.org/package/centos/openresty
  && mkdir -p /opt/app-root/etc/nginx.conf.d /opt/app-root/run \
  && chmod -R a+rx  $NGINX_VAR_DIR/nginx \
  && chmod -R a+rwX $NGINX_VAR_DIR/nginx/logs \
-                   $NGINX_VAR_DIR/site/lualib \
+                   $NGINX_VAR_DIR/site \
                    /opt/app-root/run
 
 COPY ./etc/ /opt/app-root/etc
