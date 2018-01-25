@@ -19,11 +19,9 @@ NGINX_CONF_DIR=${NGINX_CONF_DIR-conf.d}
 NGINX_AUX_DIR=${NGINX_AUX_DIR-aux}
 
 copy_static_files() {
-    echo "---> Copying static files"
     if [ -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
+        echo "---> Copying static files"
         cp -Rf /tmp/src/"${NGINX_STATIC_DIR}"/. ./html
-    else
-        cp -Rf /tmp/src/. ./html
     fi
 }
 
@@ -35,9 +33,7 @@ copy_default_config() {
 copy_server_configs() {
     echo "---> Copying nginx config"
     rm /opt/app-root/etc/nginx.conf.d/default.conf
-    if [ ! -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
-        copy_default_config
-    elif [ -n "${NGINX_SERVER_CONF_FILE}" ] && [ -f /tmp/src/"${NGINX_SERVER_CONF_FILE}" ]; then
+    if [ -n "${NGINX_SERVER_CONF_FILE}" ] && [ -f /tmp/src/"${NGINX_SERVER_CONF_FILE}" ]; then
         cp /tmp/src/"${NGINX_SERVER_CONF_FILE}" /opt/app-root/etc/nginx.conf.d
     elif [ -n "${NGINX_CONF_DIR}" ] && [ -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
         cp -Rf /tmp/src/"${NGINX_CONF_DIR}"/. /opt/app-root/etc/nginx.conf.d

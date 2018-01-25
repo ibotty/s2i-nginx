@@ -8,8 +8,6 @@ static files to serve are.
 s2i-nginx will take all files within, copy them into the docker image and take
 a basic nginx config that will simply serve these files.
 
-If there is no `html` directory, it will just copy all files in the repo.
-In that case you will not be able to customize the nginx config.
 
 ## Lua sources
 
