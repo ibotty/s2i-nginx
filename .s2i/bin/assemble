@@ -17,6 +17,7 @@ NGINX_STATIC_DIR=${NGINX_STATIC_DIR-html}
 NGINX_CONF_FILE=${NGINX_CONF_FILE-}
 NGINX_CONF_DIR=${NGINX_CONF_DIR-conf.d}
 NGINX_AUX_DIR=${NGINX_AUX_DIR-aux}
+OPM_DEPENDENCIES_FILE="${OPM_DEPENDENCIES_FILE-opm-dependencies.txt}"
 
 copy_static_files() {
     if [ -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
@@ -70,8 +71,10 @@ cleanup() {
 }
 
 install_dependencies() {
-    echo "---> installing openresty lua dependencies in opm-dependencies.txt"
-    grep -v "^#" /tmp/src/opm-dependencies.txt | xargs -n1 opm get
+    if [ -f "/tmp/src/${OPM_DEPENDENCIES_FILE}" ]; then
+        echo "---> installing openresty lua dependencies in ${OPM_DEPENDENCIES_FILE}"
+        grep -v "^#" "/tmp/src/${OPM_DEPENDENCIES_FILE}" | xargs -n1 opm get
+    fi
 }
 
 copy_static_files
