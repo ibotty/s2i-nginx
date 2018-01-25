@@ -28,6 +28,7 @@ copy_static_files() {
 }
 
 copy_default_config() {
+    echo "---> Using default configuration"
     cp /opt/app-root/etc/nginx.server.sample.conf /opt/app-root/etc/nginx.conf.d/default.conf
 }
 
@@ -36,9 +37,9 @@ copy_server_configs() {
     rm /opt/app-root/etc/nginx.conf.d/default.conf
     if [ ! -d /tmp/src/"${NGINX_STATIC_DIR}" ]; then
         copy_default_config
-    elif [ -n "${NGINX_SERVER_CONF_FILE}" -a -f /tmp/src/"${NGINX_SERVER_CONF_FILE}" ]; then
+    elif [ -n "${NGINX_SERVER_CONF_FILE}" ] && [ -f /tmp/src/"${NGINX_SERVER_CONF_FILE}" ]; then
         cp /tmp/src/"${NGINX_SERVER_CONF_FILE}" /opt/app-root/etc/nginx.conf.d
-    elif [ -n "${NGINX_CONF_DIR}" -a -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
+    elif [ -n "${NGINX_CONF_DIR}" ] && [ -d /tmp/src/"${NGINX_CONF_DIR}" ]; then
         cp -Rf /tmp/src/"${NGINX_CONF_DIR}"/. /opt/app-root/etc/nginx.conf.d
     else
         copy_default_config
@@ -60,7 +61,7 @@ test_config() {
         echo
         for f in /opt/app-root/etc/nginx.conf.d/*; do
             echo "==> $f <=="
-            cat $f
+            cat "$f"
         done
         exit 1
     fi
@@ -68,7 +69,7 @@ test_config() {
 
 cleanup() {
     echo "---> cleanup"
-    rm -f /opt/app-root/run/nginx.pid $NGINX_VAR_DIR/log/nginx/error.log
+    rm -f /opt/app-root/run/nginx.pid "$NGINX_VAR_DIR/log/nginx/error.log"
     chmod a+rwx /opt/app-root/etc/nginx.conf.d
 }
 
