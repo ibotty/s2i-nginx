@@ -23,6 +23,11 @@ envsubst_config() {
   fi
 }
 
-envsubst_config
+symlink_source() {
+  ln -s /opt/app-root/src/* /opt/app-root/run
+}
 
-exec openresty -p /opt/app-root/src -c "$NGINX_CONF"
+envsubst_config
+symlink_source
+
+exec openresty -p /opt/app-root/run -c "$NGINX_CONF"

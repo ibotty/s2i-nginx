@@ -13,7 +13,7 @@ LABEL io.k8s.description="Platform for serving nginx-based applications (static 
 RUN yum-config-manager --add-repo https://openresty.org/package/centos/openresty.repo \
  && yum install -y --setopt=tsflags=nodocs openresty openresty-opm openresty-resty openresty-pcre bcrypt \
  && yum clean all -y \
- && mkdir -p /opt/app-root/etc/nginx.conf.d /opt/app-root/run \
+ && mkdir -p /opt/app-root/etc/nginx.conf.d /opt/app-root/run/logs \
  && chmod -R a+rwX $NGINX_VAR_DIR/nginx \
                    $NGINX_VAR_DIR/site \
                    /opt/app-root/run
