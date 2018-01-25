@@ -66,7 +66,7 @@ test_config() {
 
 cleanup() {
     echo "---> cleanup"
-    rm -f /opt/app-root/run/nginx.pid "$NGINX_VAR_DIR/log/nginx/error.log"
+    rm -f /opt/app-root/run/nginx.pid "$NGINX_VAR_DIR/nginx/logs/error.log"
     chmod a+rwx /opt/app-root/etc/nginx.conf.d
 }
 
